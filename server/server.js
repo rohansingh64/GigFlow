@@ -13,11 +13,15 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: [
+    "http://localhost:5173",
+    "https://gigflowplatformbyrohan.netlify.app/"   // your Netlify URL
+  ],
   credentials: true
 }));
 
-// // Routes (we will create later)
+
+// Routes 
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/gigs", require("./routes/gigRoutes"));
 app.use("/api/bids", require("./routes/bidRoutes"));
