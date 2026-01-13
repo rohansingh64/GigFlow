@@ -34,6 +34,9 @@ app.use(
 	})
 );
 
+app.set("trust proxy", 1);
+
+
 // Routes
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/gigs", require("./routes/gigRoutes"));

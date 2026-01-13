@@ -4,41 +4,44 @@ const jwt = require("jsonwebtoken");
 
 // Register
 exports.register = async (req, res) => {
-  const { name, email, password } = req.body;
+	const { name, email, password } = req.body;
 
-  const userExists = await User.findOne({ email });
-  if (userExists) {
-    return res.status(400).json({ message: "User already exists" });
-  }
+	const userExists = await User.findOne({ email });
+	if (userExists) {
+		return res.status(400).json({ message: "User already exists" });
+	}
 
-  await User.create({ name, email, password });
-  res.status(201).json({ message: "User registered successfully" });
+	await User.create({ name, email, password });
+	res.status(201).json({ message: "User registered successfully" });
 };
 
 // Login
 exports.login = async (req, res) => {
-  const { email, password } = req.body;
+	const { email, password } = req.body;
 
-  const user = await User.findOne({ email });
-  if (!user) return res.status(400).json({ message: "Invalid credentials" });
+	const user = await User.findOne({ email });
+	if (!user) return res.status(400).json({ message: "Invalid credentials" });
 
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+	const isMatch = await bcrypt.compare(password, user.password);
+	if (!isMatch)
+		return res.status(400).json({ message: "Invalid credentials" });
 
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: "7d"
-  });
+	const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+		expiresIn: "7d",
+	});
 
-  res.cookie("token", token, {
-    httpOnly: true,
-    sameSite: "strict"
-  });
+	res.cookie("token", token, {
+		httpOnly: true,
+		secure: true, // MUST be true for HTTPS
+		sameSite: "none", // MUST be none for cross-domain
+		maxAge: 7 * 24 * 60 * 60 * 1000,
+	});
 
-  res.json({
-    user: {
-      id: user._id,
-      name: user.name,
-      email: user.email
-    }
-  });
+	res.json({
+		user: {
+			id: user._id,
+			name: user.name,
+			email: user.email,
+		},
+	});
 };
