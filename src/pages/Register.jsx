@@ -1,17 +1,25 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { registerUser } from "../features/auth/authSlice";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { registerUser, clearError } from "../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 
 function Register() {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { error } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    dispatch(clearError()); // clear stale error on page load
+  }, [dispatch]);
 
   const submit = async (e) => {
     e.preventDefault();
-    await dispatch(registerUser(form));
-    navigate("/login");
+    const res = await dispatch(registerUser(form));
+
+    if (res.meta.requestStatus === "fulfilled") {
+      navigate("/login");
+    }
   };
 
   return (
@@ -22,21 +30,36 @@ function Register() {
         <input
           className="border p-2 w-full mb-3"
           placeholder="Name"
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
+          onChange={(e) => {
+            setForm({ ...form, name: e.target.value });
+            dispatch(clearError());
+          }}
         />
 
         <input
           className="border p-2 w-full mb-3"
           placeholder="Email"
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
+          onChange={(e) => {
+            setForm({ ...form, email: e.target.value });
+            dispatch(clearError());
+          }}
         />
 
         <input
           type="password"
           className="border p-2 w-full mb-3"
           placeholder="Password"
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
+          onChange={(e) => {
+            setForm({ ...form, password: e.target.value });
+            dispatch(clearError());
+          }}
         />
+
+        {error && (
+          <p className="text-red-600 text-sm mb-3">
+            {error}
+          </p>
+        )}
 
         <button className="bg-blue-600 text-white w-full py-2">
           Register
