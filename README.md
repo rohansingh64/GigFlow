@@ -48,3 +48,21 @@ Frontend --
 npm install
 npm start
 
+
+
+
+
+
+# for frontend .env file
+
+VITE_API_URL= example-of-backend-https://gw-example-env-variable.onrender.com
+
+
+# for backend (server)  .env file
+
+
+MONGO_URI = your mongo DB url
+
+PORT = 4000 or any port
+
+JWT_SECRET = "your jwt secret key"
