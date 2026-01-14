@@ -5,11 +5,11 @@ import { Link } from "react-router-dom";
 
 function Home() {
   const dispatch = useDispatch();
-  const { list, loading } = useSelector(state => state.gigs);
+  const { list, loading } = useSelector((state) => state.gigs);
 
   useEffect(() => {
     dispatch(fetchGigs());
-  }, []);
+  }, [dispatch]);
 
   if (loading) return <div className="p-10">Loading...</div>;
 
@@ -17,7 +17,7 @@ function Home() {
     <div className="p-10">
       <h1 className="text-3xl font-bold mb-6">Open Gigs</h1>
 
-      {list.map(gig => (
+      {list.map((gig) => (
         <div key={gig._id} className="border p-4 mb-4 bg-white shadow">
           <h2 className="text-xl font-semibold">{gig.title}</h2>
           <p>{gig.description}</p>
